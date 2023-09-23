@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Repositories\Interfaces\ITaskRepository;
+use App\Models\User;
 
 class TaskRepository implements ITaskRepository
 {
@@ -15,11 +16,12 @@ class TaskRepository implements ITaskRepository
     {
         $task = $this->show($id);
         $task->update(['status' => 1]);
+        $user = User::find(Auth()->User()->id);
         
-        $list = Auth()->user()->tasklist
-            ->find($task['list_id']);
+        // $list = Auth()->user()->tasklist()->find($task['list_id']);
+        $list = $user->taskList()->find($task['list_id']);
 
-        $taskOpen = Auth()->user()->tasks
+        $taskOpen = $user->tasks()
             ->where('list_id', '=', $task['list_id'])
             ->where('status', 0)
             ->get();
@@ -33,8 +35,8 @@ class TaskRepository implements ITaskRepository
 
     public function show($id)
     {
-        $show = auth()->user()->tasks
-            ->find($id);
+        $user = User::find(Auth()->User()->id);
+        $show = $user->tasks()->find($id);
  
         if (!$show) {
             throw new \Exception('Not found', -404);
@@ -56,8 +58,8 @@ class TaskRepository implements ITaskRepository
         $task = $this->show($id);
         $task->delete();
 
-        $list = Auth()->user()->tasklist
-            ->find($task['list_id']);
+        $user = User::find(Auth()->User()->id);
+        $list = $user->tasklist()->find($task['list_id']);
 
         $taskOpen = Auth()->user()->tasks
             ->where('list_id', '=', $task['list_id'])
@@ -73,8 +75,8 @@ class TaskRepository implements ITaskRepository
 
     public function store($data)
     {
-        $list = auth()->user()->taskList
-            ->find($data['list_id']);
+        $user = User::find(Auth()->User()->id);
+        $list = $user->taskList()->find($data['list_id']);
 
         if (!$list) {
             throw new \Exception('List not found', -404);
@@ -91,7 +93,8 @@ class TaskRepository implements ITaskRepository
 
     public function tasksByList($id)
     {
-        $tasks = Auth()->user()->tasks
+        $user = User::find(Auth()->User()->id);
+        $tasks = $user->tasks()
             ->where('list_id', '=', $id)
             ->get();
 

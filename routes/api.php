@@ -31,8 +31,12 @@ Route::group([
     Route::put('list/close/{id}', [TaskController::class, 'taskByList'])->name('tasks.list');
 });
 
-Route::post('/register',[UserController::class, 'store'])->name('users.store');
-Route::post('/login',[UserController::class, 'login'])->name('users.login');
+Route::group([
+    'prefix' => 'v1'
+], function () {
+    Route::post('/register',[UserController::class, 'store'])->name('users.store');
+    Route::post('/login',[UserController::class, 'login'])->name('users.login');
+});
 
 
 
