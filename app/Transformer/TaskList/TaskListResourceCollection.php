@@ -16,7 +16,7 @@ class TaskListResourceCollection extends ResourceCollection
         return [
             'status' => true,
             'msg' => 'Data Listening',
-            'url' => route('tasklist.index')
+            'url' => route('task_list.index')
         ];
     }
 

@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Repositories\Interfaces\ITaskRepository;
-use App\Models\User;
+use App\Models\Tasks;
 
 class TaskRepository implements ITaskRepository
 {
@@ -12,32 +12,10 @@ class TaskRepository implements ITaskRepository
         return auth()->user()->tasks;
     }
 
-    public function closeTask($id)
-    {
-        $task = $this->show($id);
-        $task->update(['status' => 1]);
-        $user = User::find(Auth()->User()->id);
-        
-        // $list = Auth()->user()->tasklist()->find($task['list_id']);
-        $list = $user->taskList()->find($task['list_id']);
-
-        $taskOpen = $user->tasks()
-            ->where('list_id', '=', $task['list_id'])
-            ->where('status', 0)
-            ->get();
-        
-        if(count($taskOpen) === 0){
-            $list->update(['status' => 1]);
-        }
-
-        return $task;
-    }
-
     public function show($id)
     {
-        $user = User::find(Auth()->User()->id);
-        $show = $user->tasks()->find($id);
- 
+        $show = auth()->user()->tasks->find($id);
+        
         if (!$show) {
             throw new \Exception('Not found', -404);
         }
@@ -45,38 +23,9 @@ class TaskRepository implements ITaskRepository
         return $show;
     }
 
-    public function updateTask($data, $id)
-    {
-        $task = $this->show($id);
-
-        $task->update($data);
-        return $task;
-    }
-
-    public function destroy($id)
-    {
-        $task = $this->show($id);
-        $task->delete();
-
-        $user = User::find(Auth()->User()->id);
-        $list = $user->tasklist()->find($task['list_id']);
-
-        $taskOpen = Auth()->user()->tasks
-            ->where('list_id', '=', $task['list_id'])
-            ->where('status', 0)
-            ->get();
-        
-        if(count($taskOpen) === 0){
-            $list->update(['status' => 1]);
-        }
-
-        return $task;
-    }
-
     public function store($data)
     {
-        $user = User::find(Auth()->User()->id);
-        $list = $user->taskList()->find($data['list_id']);
+        $list = auth()->user()->taskList->find($data['list_id']);
 
         if (!$list) {
             throw new \Exception('List not found', -404);
@@ -91,13 +40,60 @@ class TaskRepository implements ITaskRepository
         return $list->tasks()->create($data); 
     }
 
-    public function tasksByList($id)
+    public function updateTask($data, $id)
     {
-        $user = User::find(Auth()->User()->id);
-        $tasks = $user->tasks()
-            ->where('list_id', '=', $id)
-            ->get();
+        $task = $this->show($id);
+
+        $task->update($data);
+        return $task;
+    }
+
+    public function destroy($id)
+    {
+        $task = $this->show($id);
+        $task->delete();
+        
+        $list = auth()->user()->taskList->find($task['list_id']);
+
+        $taskOpen = Auth()->user()->tasks
+            ->where('list_id', '=', $task['list_id'])
+            ->where('status', 0);
+        
+        if(count($taskOpen) === 0){
+            $list->update(['status' => 1]);
+        }
+
+        return New Tasks;
+    }
+
+    public function tasksByList($list_id)
+    {
+        $tasks = auth()
+            ->user()
+            ->tasks
+            ->where('list_id', '=', $list_id);
 
         return $tasks;
+    }
+
+    public function closeTask($id)
+    {
+        $task = $this->show($id);
+
+        $task->update(['status' => 1]);
+        
+        $list = auth()->user()->taskList->find($task['list_id']);
+
+        $taskOpen = auth()
+            ->user()
+            ->tasks
+            ->where('list_id', '=', $task['list_id'])
+            ->where('status', 0);
+        
+        if(count($taskOpen) === 0){
+            $list->update(['status' => 1]);
+        }
+
+        return $task;
     }
 }

@@ -28,23 +28,6 @@ class TaskController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreTaskRequest $request)
-    {
-        try{        
-            $data = $this->taskRepository->store($request->all());
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('tasks.store',null,$e);
-        }
-
-        return new TaskResource($data,[
-            'type' => 'store',
-            'route' => 'tasks.store'
-        ]);
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show($id)
@@ -52,12 +35,29 @@ class TaskController extends Controller
         try{        
             $data = $this->taskRepository->show($id);
         }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('tasks.show',$id,$e);
+            return ResponseService::exception('task.show',$id,$e);
         }
 
         return new TaskResource($data,[
             'type' => 'show',
-            'route' => 'tasks.show'
+            'route' => 'task.show'
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreTaskRequest $request)
+    {
+        try{        
+            $data = $this->taskRepository->store($request->all());
+        }catch(\Throwable|\Exception $e){
+            return ResponseService::exception('task.store',null,$e);
+        }
+
+        return new TaskResource($data,[
+            'type' => 'store',
+            'route' => 'task.store'
         ]);
     }
 
@@ -69,12 +69,12 @@ class TaskController extends Controller
         try{        
             $data = $this->taskRepository->updateTask($request->all(), $id);
         }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('tasks.update',$id,$e);
+            return ResponseService::exception('task.update',$id,$e);
         }
 
         return new TaskResource($data,[
             'type' => 'update',
-            'route' => 'tasks.update'
+            'route' => 'task.update'
         ]);
     }
 
@@ -85,21 +85,22 @@ class TaskController extends Controller
     {
         try{
             $data = $this->taskRepository->destroy($id);
+            $data->id = $id;
         }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('tasks.destroy',$id,$e);
+            return ResponseService::exception('task.destroy',$id,$e);
         }
         return new TaskResource($data,[
             'type' => 'destroy',
-            'route' => 'tasks.destroy'
+            'route' => 'task.destroy'
         ]); 
     }
 
-    public function tasksByList($id)
+    public function tasksByList($list_id)
     {
         try{        
-            $data = $this->taskRepository->tasksByList($id);
+            $data = $this->taskRepository->tasksByList($list_id);
         }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('tasks.tasksByList',$id,$e);
+            return ResponseService::exception('task.bylist',$list_id,$e);
         }
 
         return new TaskResourceCollection($data);
@@ -110,12 +111,12 @@ class TaskController extends Controller
         try{        
             $data = $this->taskRepository->closeTask($id);
         }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('tasks.closeTask',$id,$e);
+            return ResponseService::exception('task.close',$id,$e);
         }
 
         return new TaskResource($data,[
             'type' => 'update',
-            'route' => 'tasks.closeTask'
+            'route' => 'task.close'
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskListController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -26,8 +27,8 @@ Route::group([
 
     Route::post('/task_list/completed', [TaskListController::class, 'completed'])->name('tasklist.completed');
     Route::post('/logout', [UserController::class, 'logout'])->name('users.logout');
-    Route::put('task/close/{id}', [TaskController::class, 'close'])->name('tasks.close');
-    Route::put('list/close/{id}', [TaskController::class, 'taskByList'])->name('tasks.list');
+    Route::put('task/close/{id}', [TaskController::class, 'closeTask'])->name('task.close');
+    Route::get('task/bylist/{id}', [TaskController::class, 'tasksByList'])->name('task.bylist');
 });
 
 Route::group([
