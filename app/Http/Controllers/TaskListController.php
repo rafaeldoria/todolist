@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTaskListRequest;
-use App\Http\Requests\UpdateTaskListRequest;
+use Illuminate\Http\Request;
+use App\Http\Requests\TaskList\UpdateTaskListRequest;
 use App\Repositories\TaskListRepository;
 use App\Services\ResponseService;
 use App\Transformer\TaskList\TaskListResource;
@@ -29,17 +29,17 @@ class TaskListController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store( $request)
+    public function store(Request $request)
     {
         try {
             $data = $this->taskListRepository->create($request->all());
         } catch (\Throwable|\Exception $e) {
-            return ResponseService::exception('tasklist.store', null, $e);
+            return ResponseService::exception('task_list.store', null, $e);
         }
 
         return new TaskListResource($data, [
             'type' => 'store',
-            'route' => 'tasklist.store'
+            'route' => 'task_list.store'
         ]);
     }
 
@@ -51,22 +51,20 @@ class TaskListController extends Controller
     {
         try{        
             $data = $this->taskListRepository->show($id);
-            // TODO:: testar passando taskList diretamente
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('tasklist.show',$id,$e);
         }
 
         return new TaskListResource($data, [
             'type' => 'show',
-            'route' => 'tasklist.show'
+            'route' => 'task_list.show'
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    // public function update(UpdateTaskListRequest $request, TaskList $taskList)
-    public function update($request, $id)
+    public function update(UpdateTaskListRequest $request, Int $id)
     {
         try{        
             $data = $this->taskListRepository->updateList($request->all(), $id);
@@ -76,7 +74,7 @@ class TaskListController extends Controller
 
         return new TaskListResource($data, [
             'type' => 'update',
-            'route' => 'tasklist.update'
+            'route' => 'task_list.update'
         ]);
     }
 
@@ -87,12 +85,13 @@ class TaskListController extends Controller
     {
         try{
             $data = $this->taskListRepository->destroyList($id);
+            $data->id = $id;
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('tasklist.destroy',$id,$e);
         }
-        return new TaskListResource($data,[
+        return new TaskListResource($data, [
             'type' => 'destroy',
-            'route' => 'tasklist.destroy'
+            'route' => 'task_list.destroy'
         ]); 
     }
 }

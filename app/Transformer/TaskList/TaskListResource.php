@@ -19,10 +19,10 @@ class TaskListResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'title' => $this->title,
-            'status' => $this->status == 1 ? 'Done' : 'To Do'
+            'id' => !is_null($this->id) ? $this->id : '',
+            'user_id' => !is_null($this->user_id) ? $this->user_id : '',
+            'title' => !is_null($this->title) ? $this->title : '',
+            'status' => !is_null($this->title) ? ($this->status == 1 ? 'Done' : 'To Do') : ''
         ];
     }
 

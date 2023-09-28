@@ -3,20 +3,22 @@
 namespace App\Repositories;
 
 use App\Models\TaskList;
+use App\Models\User;
 use App\Repositories\Interfaces\ITaskListRepository;
 
 class TaskListRepository implements ITaskListRepository
 {
-    public function index() : TaskList {
-        return auth()->user()->TaskList->sortBy('status');
+    public function index() {
+        return Auth()->User()->taskList;
     }
 
     public function create($data) : TaskList {
-        return auth()->user()->TaskList->create($data);
+        $data['user_id'] = auth()->User()->id;
+        return TaskList::create($data);
     }
 
     public function show($id) : TaskList {
-        $taskList = auth()->user()->TaskList->find($id);
+        $taskList = auth()->user()->taskList->find($id);
 
         if(!$taskList){
             throw new \Exception('Not found', -404);
@@ -31,8 +33,9 @@ class TaskListRepository implements ITaskListRepository
         return $taskList;
     }
 
-    public function destroyList($id) : void {
+    public function destroyList($id) : TaskList {
         $taskList = $this->show($id);
         $taskList->delete();
+        return new TaskList;
     }
 }

@@ -10,7 +10,7 @@ use App\Transformer\Task\TaskResourceCollection;
 use App\Transformer\Task\TaskResource;
 use App\Services\ResponseService;
 
-class TasksController extends Controller
+class TaskController extends Controller
 {
     protected $taskRepository;
 

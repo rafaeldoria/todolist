@@ -25,9 +25,15 @@ class ResponseService
                 $url = self::getUrl($route, $id);
                 break;
             
-            case 'store':
+            case 'destroy':
                 $status = true;
                 $msg = 'Data deleted success!';
+                $url = self::getUrl($route, $id);
+                break;
+
+            case 'update':
+                $status = true;
+                $msg = 'Data updated success!';
                 $url = self::getUrl($route, $id);
                 break;
         }
@@ -66,7 +72,7 @@ class ResponseService
                 }
                 $status = false;
                 $statusCode = 500;
-                $error = 'General error';
+                $error = $e->getMessage();
                 $url = self::getUrl($route, $id);
                 break;
         }

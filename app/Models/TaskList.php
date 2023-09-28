@@ -9,6 +9,16 @@ class TaskList extends Model
 {
     use HasFactory;
 
+    protected $attributes = [
+        'status' => 0,
+    ];
+
+    protected $fillable = [
+        'title',
+        'user_id',
+        'status'
+    ];
+
     public function user(){
         return $this->belongsTo('App\Models\User');
     }
