@@ -6,9 +6,9 @@ use App\Models\User;
 use App\Repositories\Interfaces\IUserRepositories;
 use Illuminate\Support\Facades\Hash;
 
-class UserRepositories implements IUserRepositories
+class UserRepositories extends BaseRepository
 {
-    public function create(array $user) {
+    public function store(array $user) {
         return User::create([
             'name' => $user['name'],
             'email' => $user['email'] ,

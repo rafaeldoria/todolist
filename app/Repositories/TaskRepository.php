@@ -5,14 +5,14 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\ITaskRepository;
 use App\Models\Tasks;
 
-class TaskRepository implements ITaskRepository
+class TaskRepository extends BaseRepository implements ITaskRepository
 {
     public function index()
     {
         return auth()->user()->tasks;
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $show = auth()->user()->tasks->find($id);
         
@@ -23,7 +23,7 @@ class TaskRepository implements ITaskRepository
         return $show;
     }
 
-    public function store($data)
+    public function store(array $data)
     {
         $list = auth()->user()->taskList->find($data['list_id']);
 
@@ -40,7 +40,7 @@ class TaskRepository implements ITaskRepository
         return $list->tasks()->create($data); 
     }
 
-    public function updateTask($data, $id)
+    public function update(array $data,int $id)
     {
         $task = $this->show($id);
 
@@ -48,7 +48,7 @@ class TaskRepository implements ITaskRepository
         return $task;
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $task = $this->show($id);
         $task->delete();
@@ -66,17 +66,7 @@ class TaskRepository implements ITaskRepository
         return New Tasks;
     }
 
-    public function tasksByList($list_id)
-    {
-        $tasks = auth()
-            ->user()
-            ->tasks
-            ->where('list_id', '=', $list_id);
-
-        return $tasks;
-    }
-
-    public function closeTask($id)
+    public function closeTask(int $id)
     {
         $task = $this->show($id);
 
@@ -95,5 +85,15 @@ class TaskRepository implements ITaskRepository
         }
 
         return $task;
+    }
+
+    public function tasksByList(int $list_id)
+    {
+        $tasks = auth()
+            ->user()
+            ->tasks
+            ->where('list_id', '=', $list_id);
+
+        return $tasks;
     }
 }

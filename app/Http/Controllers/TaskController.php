@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Task\StoreTaskRequest;
 use Illuminate\Http\Request;
-use App\Models\Tasks;
-use App\Repositories\TaskRepository;
+use App\Repositories\Interfaces\ITaskRepository;
 use App\Transformer\Task\TaskResourceCollection;
 use App\Transformer\Task\TaskResource;
 use App\Services\ResponseService;
@@ -14,7 +13,7 @@ class TaskController extends Controller
 {
     protected $taskRepository;
 
-    public function __construct(TaskRepository $taskRepository)
+    public function __construct(ITaskRepository $taskRepository)
     {
         $this->taskRepository = $taskRepository;
     }
@@ -67,7 +66,7 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         try{        
-            $data = $this->taskRepository->updateTask($request->all(), $id);
+            $data = $this->taskRepository->update($request->all(), $id);
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('task.update',$id,$e);
         }
@@ -95,17 +94,6 @@ class TaskController extends Controller
         ]); 
     }
 
-    public function tasksByList($list_id)
-    {
-        try{        
-            $data = $this->taskRepository->tasksByList($list_id);
-        }catch(\Throwable|\Exception $e){
-            return ResponseService::exception('task.bylist',$list_id,$e);
-        }
-
-        return new TaskResourceCollection($data);
-    }
-
     public function closeTask($id)
     {
         try{        
@@ -119,4 +107,16 @@ class TaskController extends Controller
             'route' => 'task.close'
         ]);
     }
+
+    public function tasksByList($list_id)
+    {
+        try{        
+            $data = $this->taskRepository->tasksByList($list_id);
+        }catch(\Throwable|\Exception $e){
+            return ResponseService::exception('task.bylist',$list_id,$e);
+        }
+
+        return new TaskResourceCollection($data);
+    }
+
 }

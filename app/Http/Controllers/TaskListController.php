@@ -32,7 +32,7 @@ class TaskListController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $this->taskListRepository->create($request->all());
+            $data = $this->taskListRepository->store($request->all());
         } catch (\Throwable|\Exception $e) {
             return ResponseService::exception('task_list.store', null, $e);
         }
@@ -67,7 +67,7 @@ class TaskListController extends Controller
     public function update(UpdateTaskListRequest $request, Int $id)
     {
         try{        
-            $data = $this->taskListRepository->updateList($request->all(), $id);
+            $data = $this->taskListRepository->update($request->all(), $id);
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('tasklist.update',$id,$e);
         }
@@ -84,7 +84,7 @@ class TaskListController extends Controller
     public function destroy($id)
     {
         try{
-            $data = $this->taskListRepository->destroyList($id);
+            $data = $this->taskListRepository->destroy($id);
             $data->id = $id;
         }catch(\Throwable|\Exception $e){
             return ResponseService::exception('tasklist.destroy',$id,$e);
