@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUser;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepositories;
@@ -20,14 +21,6 @@ class UserController extends Controller
 
     
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreUser $request)
@@ -42,6 +35,11 @@ class UserController extends Controller
             return ResponseService::exception('users.store', null, $e);
         }
 
+        $token = auth()->attempt([
+            'email'=> $request->get('email'),
+            'password'=> $request->get('password')
+        ]);
+
         return new UserResource($user, [
             'type' => 'store',
             'route' => 'users.store'
@@ -51,7 +49,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
+        
         try {
             if (!$token = auth()->attempt($credentials)) {
                 throw new \Exception('Unauthorized.', -401);
@@ -59,7 +57,7 @@ class UserController extends Controller
         } catch (\Throwable|\Exception $e) {
             return ResponseService::exception('users.login', null, $e);
         }
-
+        // $expires_in = auth()->factory()->getTTL() * 60;
         return response()->json(compact('token'));
     }
 
@@ -71,5 +69,19 @@ class UserController extends Controller
             return ResponseService::exception('users.logout', null, $e);
         }
         return response(['status' => true,'msg' => 'Logout success'], 200);
+    }
+
+    public function show(Request $request){
+        try {
+            $email = $request->has('email') ? $request->input('email') : '';
+            $data = $this->userRepository->showByEmail($email);
+            
+        } catch (\Throwable|\Exception $e) {
+            return ResponseService::exception('users.get', null, $e);
+        }
+        return new userResource($data,[
+            'type' => 'show',
+            'route' => 'user.show'
+        ]);
     }
 }

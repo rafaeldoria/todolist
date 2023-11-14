@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskListController;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +29,7 @@ Route::group([
     Route::post('/logout', [UserController::class, 'logout'])->name('users.logout');
     Route::put('task/close/{id}', [TaskController::class, 'closeTask'])->name('task.close');
     Route::get('task/bylist/{id}', [TaskController::class, 'tasksByList'])->name('task.bylist');
+    Route::get('/user', [UserController::class, 'show'])->name('user.show');
 });
 
 Route::group([
@@ -36,6 +37,9 @@ Route::group([
 ], function () {
     Route::post('/register',[UserController::class, 'store'])->name('users.store');
     Route::post('/login',[UserController::class, 'login'])->name('users.login');
+    Route::get('/', function(){
+        return response()->json('Welcome api tasks');
+    });
 });
 
 
