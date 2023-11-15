@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskListController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,17 +27,19 @@ Route::group([
     ]);
 
     Route::post('/task_list/completed', [TaskListController::class, 'completed'])->name('tasklist.completed');
-    Route::post('/logout', [UserController::class, 'logout'])->name('users.logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::put('task/close/{id}', [TaskController::class, 'closeTask'])->name('task.close');
     Route::get('task/bylist/{id}', [TaskController::class, 'tasksByList'])->name('task.bylist');
     Route::get('/user', [UserController::class, 'show'])->name('user.show');
+    Route::get('/user/validtoken', [UserController::class, 'validToken'])->name('user.validtoken');
+    Route::get('/auth/validtoken', [AuthController::class, 'validToken'])->name('auth.validtoken');
 });
 
 Route::group([
     'prefix' => 'v1'
 ], function () {
     Route::post('/register',[UserController::class, 'store'])->name('users.store');
-    Route::post('/login',[UserController::class, 'login'])->name('users.login');
+    Route::post('/login',[AuthController::class, 'login'])->name('auth.login');
     Route::get('/', function(){
         return response()->json('Welcome api tasks');
     });

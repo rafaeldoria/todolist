@@ -35,40 +35,10 @@ class UserController extends Controller
             return ResponseService::exception('users.store', null, $e);
         }
 
-        $token = auth()->attempt([
-            'email'=> $request->get('email'),
-            'password'=> $request->get('password')
-        ]);
-
         return new UserResource($user, [
             'type' => 'store',
             'route' => 'users.store'
         ]);
-    }
-
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-        
-        try {
-            if (!$token = auth()->attempt($credentials)) {
-                throw new \Exception('Unauthorized.', -401);
-            }
-        } catch (\Throwable|\Exception $e) {
-            return ResponseService::exception('users.login', null, $e);
-        }
-        // $expires_in = auth()->factory()->getTTL() * 60;
-        return response()->json(compact('token'));
-    }
-
-    public function logout()
-    {
-        try {
-            auth()->logout();
-        } catch (\Throwable|Exception $e) {
-            return ResponseService::exception('users.logout', null, $e);
-        }
-        return response(['status' => true,'msg' => 'Logout success'], 200);
     }
 
     public function show(Request $request){

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\Auth\AuthController;
 use Closure;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -26,7 +27,8 @@ class JwtMiddleware
             if($e instanceof TokenInvalidException){
                 return response()->json(['message' => 'Invalid token', 'status' => 401]);
             }else if ($e instanceof TokenExpiredException){
-                return response()->json(['message' => 'Expired token', 'status' => 498]);
+                $newToken = (new AuthController())->refresh();
+                return response()->json(['message' => 'Expired token', 'status' => 498, 'token' => $newToken]);
             }else {
                 return response()->json(['message' => 'Token not found', 'status' => 401]);
             }
