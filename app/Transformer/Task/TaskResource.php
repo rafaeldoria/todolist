@@ -23,7 +23,7 @@ class TaskResource extends JsonResource
             'user_id' => $this->user_id,
             'list_id' => $this->list_id,
             'title' => $this->title,
-            'status' => $this->status == 1 ? 'Done' : 'To Do'
+            'status' => $this->status
         ];
     }
 
