@@ -117,6 +117,7 @@ class TaskController extends Controller
         }
 
         return new TaskResourceCollection($data);
+        
     }
 
 }
